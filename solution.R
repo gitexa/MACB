@@ -12,6 +12,17 @@ library('rpart')
 library('caret')
 
 ########################################################################################################
+# Functions
+
+writeToFile <- function(filename, solution) {
+  pth = paste(path, "Results/", sep = "")
+  write.csv(solution, file = paste(pth, filename, sep = ""), row.names = F)
+}
+
+
+
+
+########################################################################################################
 # TUTORIAL 1: https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic
 # Read data 
 path = "~/Desktop/Uni/MACB/Exercises/Übung 7/"
@@ -209,7 +220,7 @@ checkaccuracy <- function(accuracy) {
   label
 }
 
-# starting with Age and Sex as indicators
+# Model 
 fol <- formula(Survived ~ Age + Sex + FsizeD)                        # 0.845
 rmodel <- rpart(fol, method="class", data=subtrain)
 rpred <- predict(rmodel, newdata=subtest, type="class")
@@ -217,7 +228,7 @@ accuracy <- modelaccuracy(subtest, rpred)
 bestaccuracy <- accuracy # init base accuracy
 print(c("accuracy1", accuracy))                             # baseline
 
-# new model 
+# Random Forest model
 model_rf <- randomForest(factor(Survived) ~ Pclass + Sex + Age + 
                            Fare + FsizeD, data = subtrain)
 pred_rf <- predict(model_rf, subtest)
