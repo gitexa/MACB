@@ -210,9 +210,17 @@ checkaccuracy <- function(accuracy) {
 }
 
 # starting with Age and Sex as indicators
-fol <- formula(Survived ~ Age + Sex)                        # 0.845
+fol <- formula(Survived ~ Age + Sex + FsizeD)                        # 0.845
 rmodel <- rpart(fol, method="class", data=subtrain)
 rpred <- predict(rmodel, newdata=subtest, type="class")
 accuracy <- modelaccuracy(subtest, rpred)
 bestaccuracy <- accuracy # init base accuracy
 print(c("accuracy1", accuracy))                             # baseline
+
+# new model 
+model_rf <- randomForest(factor(Survived) ~ Pclass + Sex + Age + 
+                           Fare + FsizeD, data = subtrain)
+pred_rf <- predict(model_rf, subtest)
+accuracy <- modelaccuracy(subtest, pred_rf)
+bestaccuracy <- accuracy # init base accuracy
+print(c("accuracy1", accuracy))
