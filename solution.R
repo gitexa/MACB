@@ -14,7 +14,7 @@ library('caret')
 ########################################################################################################
 # TUTORIAL 1: https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic
 # Read data 
-path = "~/Desktop/Uni/MACB/Exercises/Übung 7/"
+path = "C:/Users/Patrick/Desktop/Studium/02 Master/Modeling and Analyzing Consumer Behaviour with R/Excercise/CaseChallenge/MACB/"
 train = read.csv(paste(path, "Data/train.csv", sep = ""), stringsAsFactors = F)
 test = read.csv(paste(path, "Data/test.csv", sep = ""), stringsAsFactors = F)
 
@@ -132,6 +132,31 @@ full$Mother <- factor(full$Mother)
 
 md.pattern(full)
 
+
+
+
+# number of rooms that belong to a cabin
+full$RoomNum = sapply(full$Cabin, function(x) length(strsplit(x, split = "[ ]")[[1]]))
+
+# Identify Crew members
+# 1 if part of crew
+full$Crew = 0
+full$Crew[full$Fare==0] = 1
+
+
+
+# Identify ticket categories
+full$TicketCat <- gsub('[0-9].*|( .*)|(\\..*)|([//].*)', '', full$Ticket)
+
+ggplot(full[1:891,], aes(x=TicketCat, fill= factor(Survived)))+geom_bar(stat='', position='dodge')
+
+ggplot(full[1:891,], aes(x = TicketCat, fill = factor(Survived))) +
+  geom_bar(stat='count', position='dodge') +
+  abs(x = 'TicketCat') +
+  theme_few()
+
+
+
 # Split the data back into a train set and a test set
 train1 = train 
 test1 = test
@@ -220,7 +245,57 @@ print(c("accuracy1", accuracy))                             # baseline
 # new model 
 model_rf <- randomForest(factor(Survived) ~ Pclass + Sex + Age + 
                            Fare + FsizeD, data = subtrain)
+
+
+
+# Build the model (note: not all possible variables are used)
+model_rf <- randomForest(factor(Survived) ~  Sex + 
+                           Age +
+                           #Pclass +
+                           Fare +
+                           Title +
+                           FsizeD + 
+                           RoomNum + 
+                           #Child + 
+                           Mother +
+                           Crew +
+                           #Embarked +
+                           Pclass
+                           #Parch, 
+                           #SibSP,
+                            ,
+                         data = train,
+                         keep.forest = TRUE,
+                         importance = TRUE,
+                         ntree = 200,
+                         do.trace = TRUE
+)
+
+
+
+
+
+# Show model error
+plot(model_rf, ylim=c(0,0.36))
+legend('topright', colnames(rf_model$err.rate), col=1:3, fill=1:3)
+
+
+output.tree <- rpart(Survived ~  Pclass + Sex + Age + SibSp + Parch + Fare + Embarked, 
+                     data=subtrain,
+                     method="poisson",
+                     control=rpart.control(xval=10, minsplit=50 ))
+
+
 pred_rf <- predict(model_rf, subtest)
 accuracy <- modelaccuracy(subtest, pred_rf)
 bestaccuracy <- accuracy # init base accuracy
 print(c("accuracy1", accuracy))
+
+
+pred_rf2 <- predict(output.tree, subtest)
+accuracy2 <- modelaccuracy(subtest, pred_rf2)
+bestaccuracy <- accuracy2 # init base accuracy
+print(c("accuracy2", accuracy2))
+
+
+
