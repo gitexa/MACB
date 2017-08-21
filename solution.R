@@ -14,9 +14,10 @@ library('caret')
 ########################################################################################################
 # Functions
 
-writeToFile <- function(filename, solution) {
+writeToFile <- function(filename, test, solution) {
   pth = paste(path, "Results/", sep = "")
-  write.csv(solution, file = paste(pth, filename, sep = ""), row.names = F)
+  sol <- data.frame(PassengerID = test$PassengerId, Survived = solution)
+  write.csv(sol, file = paste(pth, filename, sep = ""), row.names = F)
 }
 
 
@@ -235,3 +236,18 @@ pred_rf <- predict(model_rf, subtest)
 accuracy <- modelaccuracy(subtest, pred_rf)
 bestaccuracy <- accuracy # init base accuracy
 print(c("accuracy1", accuracy))
+writeToFile("Alex_randomForest", pred_rf)
+
+model_rf <- randomForest(factor(Survived) ~ Pclass + Sex + Age + 
+                           Fare + FsizeD, data = train)
+pred_rf <- predict(model_rf, test)
+accuracy <- modelaccuracy(test, pred_rf)
+bestaccuracy <- accuracy # init base accuracy
+print(c("accuracy1", accuracy))
+writeToFile("Alex_randomForest", test, pred_rf)
+
+
+
+
+
+
