@@ -11,10 +11,11 @@ library('randomForest') # classification algorithm
 library('rpart')
 library('caret')
 
+
 ########################################################################################################
 # TUTORIAL 1: https://www.kaggle.com/mrisdal/exploring-survival-on-the-titanic
 # Read data 
-path = "C:/Users/Patrick/Desktop/Studium/02 Master/Modeling and Analyzing Consumer Behaviour with R/Excercise/CaseChallenge/MACB/"
+path = "/home/patrick/MACB/MACB/"
 train = read.csv(paste(path, "Data/train.csv", sep = ""), stringsAsFactors = F)
 test = read.csv(paste(path, "Data/test.csv", sep = ""), stringsAsFactors = F)
 
@@ -203,7 +204,7 @@ prediction <- predict(rf_model, test)
 solution <- data.frame(PassengerID = test$PassengerId, Survived = prediction)
 
 # Write the solution to file
-write.csv(solution, file = '~/Desktop/Uni/MACB/Exercises/Übung 7/Solution/rf_mod_Solution.csv', row.names = F)
+#write.csv(solution, file = '~/Desktop/Uni/MACB/Exercises/Übung 7/Solution/rf_mod_Solution.csv', row.names = F)
 
 ########################################################################################################
 # TUTORIAL 2: https://www.kaggle.com/jasonm/large-families-not-good-for-survival 
@@ -307,6 +308,6 @@ submit <- data.frame(PassengerId = test$PassengerId, Survived = pred_rf)
 
 count = count + 1
 filename = paste("17-08-21_sumbit_v", count, ".csv", sep="")
-write.csv(submit, file = paste("C:/Users/Patrick/Desktop/Studium/02 Master/Modeling and Analyzing Consumer Behaviour with R/Excercise/CaseChallenge/MACB/Results", filename, sep=""), row.names = FALSE)
+write.csv(submit, file = paste("/home/patrick/MACB/MACB/Results", filename, sep=""), row.names = FALSE)
 
 
