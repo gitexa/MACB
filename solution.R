@@ -251,7 +251,7 @@ model_rf <- randomForest(factor(Survived) ~ Pclass + Sex + Age +
 # Build the model (note: not all possible variables are used)
 model_rf <- randomForest(factor(Survived) ~  Sex + 
                            Age +
-                           #Pclass +
+                           Pclass +
                            Fare +
                            Title +
                            FsizeD + 
@@ -267,7 +267,7 @@ model_rf <- randomForest(factor(Survived) ~  Sex +
                          data = train,
                          keep.forest = TRUE,
                          importance = TRUE,
-                         ntree = 200,
+                         ntree = 500,
                          do.trace = TRUE
 )
 
@@ -292,10 +292,21 @@ bestaccuracy <- accuracy # init base accuracy
 print(c("accuracy1", accuracy))
 
 
+
 pred_rf2 <- predict(output.tree, subtest)
 accuracy2 <- modelaccuracy(subtest, pred_rf2)
 bestaccuracy <- accuracy2 # init base accuracy
 print(c("accuracy2", accuracy2))
 
+
+pred_rf <- predict(model_rf, test)
+submit <- data.frame(PassengerId = test$PassengerId, Survived = pred_rf)
+
+
+
+
+count = count + 1
+filename = paste("17-08-21_sumbit_v", count, ".csv", sep="")
+write.csv(submit, file = paste("C:/Users/Patrick/Desktop/Studium/02 Master/Modeling and Analyzing Consumer Behaviour with R/Excercise/CaseChallenge/MACB/Results", filename, sep=""), row.names = FALSE)
 
 
